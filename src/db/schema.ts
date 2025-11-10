@@ -5,14 +5,15 @@ export const product = mysqlTable(
   "products",
   {
     id: int().primaryKey().autoincrement().notNull(),
-    title: varchar({ length: 255 }).notNull(),
-    price: decimal({ precision: 10, scale: 2 }).notNull(),
+    productName: varchar(('productName'), { length: 255 }).notNull(),
+    price: decimal(('price'), { precision: 10, scale: 2 }).notNull(),
+    stock: int('stock').notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).default(
       sql`(now())`
     ),
-  },
-  (table) => [primaryKey({ columns: [table.id], name: "product_id" })]
+  }
 );
+
 
 export const productImage = mysqlTable(
   "product_image",

@@ -4,7 +4,7 @@ import { product, productImage } from "../db/schema";
 export async function createProduct(req: any) {
   const result = await db
     .insert(product)
-    .values([{ title: req.body.title, price: req.body.price }])
+    .values([{ productName: req.body.productName, price: req.body.price, stock: req.body.stock }])
     .$returningId();
 
   for (const file of req.body.images) {
