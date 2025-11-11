@@ -6,7 +6,7 @@ import orderRoutes from "./routes/orderRoute";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.NEXT_PUBLIC_API,
 }));
 
 app.use(express.json());
