@@ -7,6 +7,8 @@ const app = express();
 
 app.use(cors({
   origin: process.env.NEXT_PUBLIC_API,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 app.use(express.json());
