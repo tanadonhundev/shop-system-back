@@ -38,4 +38,41 @@ export async function getProducts() {
   return await db.select().from(product).leftJoin(productImage, eq(product.id, productImage.productId))
 }
 
+export async function deleteProducts(id: number) {
+  try {
+    const productExist = await db.select().from(product).where(eq(product.id, id))
+    if (productExist.length === 0) {
+      return {
+        success: false,
+        message: "ไม่พบสินค้าที่จะลบ",
+      };
+    }
+    // ลบสินค้า
+    await db.delete(product).where(eq(product.id, id));
+
+    return {
+      success: true,
+      message: "ลบสินค้าสำเร็จ",
+    };
+  } catch (error) {
+    console.error("Delete product error:", error);
+    return {
+      success: false,
+      message: "ลบสินค้าไม่สำเร็จ",
+    };
+  }
+}
+
+export async function updateProduct(id: number, data: any) {
+  await db
+    .update(product)
+    .set({
+      productName: data.productName,
+      price: data.price,
+      stock: data.stock,
+    })
+    .where(eq(product.id, id));
+
+  return { message: "Product Updated", id };
+}
 
