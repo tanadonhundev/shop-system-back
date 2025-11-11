@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { product, productImage } from "../db/schema";
+import { order, product, productImage } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export async function createProduct(req: any) {
@@ -37,14 +37,22 @@ export async function createProduct(req: any) {
 export async function getProducts() {
   return await db.select().from(product).leftJoin(productImage, eq(product.id, productImage.productId))
 }
-
 export async function deleteProducts(id: number) {
   try {
-    const productExist = await db.select().from(product).where(eq(product.id, id))
+    // ตรวจสอบว่ามีสินค้าไหม
+    const productExist = await db.select().from(product).where(eq(product.id, id));
     if (productExist.length === 0) {
       return {
         success: false,
         message: "ไม่พบสินค้าที่จะลบ",
+      };
+    }
+    // ตรวจสอบว่ามี order ใช้สินค้านี้หรือไม่
+    const orderExist = await db.select().from(order).where(eq(order.productId, id));
+    if (orderExist.length > 0) {
+      return {
+        success: false,
+        message: "ไม่สามารถลบสินค้าได้ มีคนสั่งซื้อสินค้านี้แล้ว",
       };
     }
     // ลบสินค้า
@@ -73,6 +81,6 @@ export async function updateProduct(id: number, data: any) {
     })
     .where(eq(product.id, id));
 
-  return { message: "Product Updated", id };
+  return { message: "อัพเดตสินค้าสำเร็จ" };
 }
 
