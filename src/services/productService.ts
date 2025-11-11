@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { order, product, productImage } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export async function createProduct(req: any) {
   try {
@@ -35,8 +35,13 @@ export async function createProduct(req: any) {
 }
 
 export async function getProducts() {
-  return await db.select().from(product).leftJoin(productImage, eq(product.id, productImage.productId))
+  return await db
+    .select()
+    .from(product)
+    .leftJoin(productImage, eq(product.id, productImage.productId))
+    .orderBy(desc(product.createdAt)); // orderBy goes after join
 }
+
 export async function deleteProducts(id: number) {
   try {
     // ตรวจสอบว่ามีสินค้าไหม
